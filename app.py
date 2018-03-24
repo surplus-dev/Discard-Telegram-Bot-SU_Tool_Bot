@@ -129,7 +129,7 @@ def tool_send(bot, update):
                 )
 
 # muang 커맨드 도움
-def help_tool(bot, update):
+def tool_help(bot, update):
     update.message.reply_text('== 지원하는 커맨드 ==\n* [[위키명:문서명]]\n** 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전\n* [버전]\n* [통계]')
 
 # 이 정규식을 포함하는 채팅만 인식하도록
@@ -137,7 +137,7 @@ data_list = ['^\[(?:버전|통계)]$', '^\[\[((?:(?!]]).)+)]]$']
 for data in data_list:
     updater.dispatcher.add_handler(RegexHandler(data, tool_send))
     
-help_handler = CommandHandler('help_tool', help_tool)
+help_handler = CommandHandler('tool_help', tool_help)
 updater.dispatcher.add_handler(help_handler)
 updater.start_polling()
 updater.idle()
