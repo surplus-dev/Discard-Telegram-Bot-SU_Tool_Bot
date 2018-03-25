@@ -104,6 +104,11 @@ def tool_send(bot, update):
 
         update.message.reply_text(data)
 
+    # 만약 ^\[도움]$ 이 있으면
+    if re.search('^\[도움]$', str(update.message.text)):
+        # 도움말 리턴
+        update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전\n> [버전]\n> [통계]')
+
     # 인터위키 내용을 포함하면
     inter = re.search('^\[\[((?:(?!]]).)+)]]$', str(update.message.text))
     if inter:
@@ -128,16 +133,10 @@ def tool_send(bot, update):
                     parse_mode = telegram.ParseMode.MARKDOWN
                 )
 
-# muang 커맨드 도움
-def tool_help(bot, update):
-    update.message.reply_text('== 지원하는 커맨드 ==\n* [[위키명:문서명]]\n** 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전\n* [버전]\n* [통계]')
-
 # 이 정규식을 포함하는 채팅만 인식하도록
-data_list = ['^\[(?:버전|통계)]$', '^\[\[((?:(?!]]).)+)]]$']
+data_list = ['^\[(?:버전|통계|도움)]$', '^\[\[((?:(?!]]).)+)]]$']
 for data in data_list:
     updater.dispatcher.add_handler(RegexHandler(data, tool_send))
     
-help_handler = CommandHandler('tool_help', tool_help)
-updater.dispatcher.add_handler(help_handler)
 updater.start_polling()
 updater.idle()
