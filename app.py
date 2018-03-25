@@ -59,7 +59,7 @@ curs.execute("create table if not exists stats(id text, count text)")
 conn.commit()
 
 # 버전 정리
-bot_version = '다용도봇 v0.0.1'
+bot_version = '다용도봇 v0.0.2'
 print(bot_version)
 
 # URL 인코딩 함수
