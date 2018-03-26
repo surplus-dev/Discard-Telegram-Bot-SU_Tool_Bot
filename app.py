@@ -4,9 +4,10 @@ from telegram.ext import Updater, RegexHandler, CommandHandler
 
 from urllib import parse
 
-import re
 import sqlite3
 import json
+import time
+import re
 
 # set.json 설정 확인
 try:
@@ -88,9 +89,11 @@ def insert_stats(data):
 def tool_send(bot, update):
     # 내용 출력
     print(str(update.message.text))
-    print(int(re.sub('-|:| ', '', str(get_time()))) - int(re.sub('-|:| ', '', str(update.message.date))))
-    
-    if int(re.sub('-|:| ', '', str(get_time()))) - int(re.sub('-|:| ', '', str(update.message.date))) > 500:
+
+    # 시간차 출력
+    print(int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))))
+
+    if int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))) < 500:
         # 챗 아이디
         chat_id = update.message.chat_id
         
