@@ -81,6 +81,7 @@ def insert_stats(data):
 def tool_send(bot, update):
     # 내용 출력
     print(str(update.message.text))
+    print(str(update.message.date))
 
     # 챗 아이디
     chat_id = update.message.chat_id
