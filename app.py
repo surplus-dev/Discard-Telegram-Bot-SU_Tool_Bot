@@ -26,7 +26,6 @@ except:
             set_data = json.loads(json_data)
 
             break
-
         else:
             print('Insert Values')
             
