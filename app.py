@@ -101,7 +101,7 @@ def tool_send(bot, update):
         # 만약 ^\[버전]$ 이 있으면
         if re.search('^\[버전]$', str(update.message.text)):
             # 통계 삽입
-            insert_stats('version:' + start[0])
+            insert_stats('version')
 
             # 버전을 리턴
             update.message.reply_text(bot_version)
@@ -109,7 +109,7 @@ def tool_send(bot, update):
         # 만약 ^\[통계]$ 가 있으면
         if re.search('^\[통계]$', str(update.message.text)):
             # 통계 삽입
-            insert_stats('count:' + start[0])
+            insert_stats('count')
 
             # 통계를 리턴
             curs.execute("select id, count from stats")
@@ -126,7 +126,7 @@ def tool_send(bot, update):
         # 만약 ^\[도움]$ 이 있으면
         if re.search('^\[도움]$', str(update.message.text)):
             # 통계 삽입
-            insert_stats('help:' + start[0])
+            insert_stats('help')
 
             # 도움말 리턴
             update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
