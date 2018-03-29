@@ -112,7 +112,7 @@ def tool_send(bot, update):
             insert_stats('count')
 
             # 통계를 리턴
-            curs.execute("select id, count from stats")
+            curs.execute("select id, count from stats order by id asc")
             count = curs.fetchall()
             if count:
                 data = ''
