@@ -5,6 +5,7 @@ from telegram.ext import Updater, RegexHandler, CommandHandler
 from urllib import parse
 
 import sqlite3
+import requests
 import json
 import time
 import re
@@ -60,7 +61,7 @@ curs.execute("create table if not exists stats(id text, count text)")
 conn.commit()
 
 # 버전 정리
-bot_version = '다용도봇 180329'
+bot_version = '다용도봇 01'
 print(bot_version)
 
 # URL 인코딩 함수
@@ -99,11 +100,17 @@ def tool_send(bot, update):
         
         # 만약 ^\[버전]$ 이 있으면
         if re.search('^\[버전]$', str(update.message.text)):
+            # 통계 삽입
+            insert_stats('version:' + start[0])
+
             # 버전을 리턴
             update.message.reply_text(bot_version)
 
         # 만약 ^\[통계]$ 가 있으면
         if re.search('^\[통계]$', str(update.message.text)):
+            # 통계 삽입
+            insert_stats('count:' + start[0])
+
             # 통계를 리턴
             curs.execute("select id, count from stats")
             count = curs.fetchall()
@@ -118,6 +125,9 @@ def tool_send(bot, update):
 
         # 만약 ^\[도움]$ 이 있으면
         if re.search('^\[도움]$', str(update.message.text)):
+            # 통계 삽입
+            insert_stats('help:' + start[0])
+
             # 도움말 리턴
             update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
 
@@ -141,12 +151,17 @@ def tool_send(bot, update):
                     # 세부적인 통계 삽입
                     insert_stats('inter:' + start[0])
 
-                    # 인코딩하고 마크다운으로 리턴
-                    bot.send_message(
-                        chat_id = chat_id, 
-                        text = "[" + inter[0] + "](" + link[start[0]] + url_encode(start[1]) + ")", 
-                        parse_mode = telegram.ParseMode.MARKDOWN
-                    )
+                    # 404 확인
+                    if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
+                        # 인코딩하고 마크다운으로 리턴
+                        bot.send_message(
+                            chat_id = chat_id, 
+                            text = "[" + inter[0] + "](" + link[start[0]] + url_encode(start[1]) + ")", 
+                            parse_mode = telegram.ParseMode.MARKDOWN
+                        )
+                    else:
+                        # 404면 문서 없음
+                        update.message.reply_text('문서가 없습니다.')
 
 # 이 정규식을 포함하는 채팅만 인식하도록
 data_list = ['^\[(?:버전|통계|도움)]$', '^\[\[((?:(?!]]).)+)]]$']
