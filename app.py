@@ -60,7 +60,7 @@ curs.execute("create table if not exists stats(id text, count text)")
 conn.commit()
 
 # 버전 정리
-bot_version = '다용도봇 v0.0.3'
+bot_version = '다용도봇 180329'
 print(bot_version)
 
 # URL 인코딩 함수
@@ -110,16 +110,16 @@ def tool_send(bot, update):
             if count:
                 data = ''
                 for plus_data in count:
-                    data += '* ' + plus_data[0] + ' : ' + plus_data[1] + '\n'
+                    data += '> ' + plus_data[0] + ' : ' + plus_data[1] + '\n'
             else:
-                data = '* 통계 없음'
+                data = '> 통계 없음'
 
             update.message.reply_text(data)
 
         # 만약 ^\[도움]$ 이 있으면
         if re.search('^\[도움]$', str(update.message.text)):
             # 도움말 리턴
-            update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전, 유리위키\n>>네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
+            update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
 
         # 인터위키 내용을 포함하면
         inter = re.search('^\[\[((?:(?!]]).)+)]]$', str(update.message.text))
@@ -138,6 +138,9 @@ def tool_send(bot, update):
                 
                 # 만약 사이트가 딕셔너리 안에 있으면
                 if start[0] in link:
+                    # 세부적인 통계 삽입
+                    insert_stats('inter:' + start[0])
+
                     # 인코딩하고 마크다운으로 리턴
                     bot.send_message(
                         chat_id = chat_id, 
