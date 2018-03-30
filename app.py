@@ -53,7 +53,7 @@ link = {
 }
 
 # 디비 연결
-conn = sqlite3.connect('bot.db', check_same_thread = False)
+conn = sqlite3.connect('bot.db')
 curs = conn.cursor()
 
 # 테이블 생성
