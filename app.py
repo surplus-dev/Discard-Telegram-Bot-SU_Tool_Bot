@@ -39,6 +39,7 @@ updater = Updater(my_token)
 # 인터위키 딕셔너리 생성
 link = {
     '나무위키' : 'https://namu.wiki/w/',
+    '알파위키' : 'https://www.alphawiki.org/w/',
     '리브레위키' : 'https://librewiki.net/wiki/',
     '백괴사전' : 'https://uncyclopedia.kr/wiki/',
     '위키백과' : 'https://ko.wikipedia.org/wiki/', 
@@ -46,6 +47,7 @@ link = {
     '구스위키' : 'http://goos.wiki/index.php?title=',
     '디시위키' : 'http://wiki.dcinside.com/wiki/',
     '유리위키' : 'https://yuri.wiki/w/index.php?title=',
+    '오픈테섭' : 'https://namu.ml/w/',
     '네이버' : 'https://search.naver.com/search.naver?query=',
     '구글' : 'https://www.google.co.kr/search?q=',
     '유튜브' : 'https://www.youtube.com/results?search_query=',
