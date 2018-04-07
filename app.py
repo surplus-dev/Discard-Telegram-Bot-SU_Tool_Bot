@@ -36,6 +36,8 @@ except:
 my_token = set_data['token']
 updater = Updater(my_token)
 
+print(set_data['token'])
+
 # 인터위키 딕셔너리 생성
 link = {
     '나무위키' : 'https://namu.wiki/w/',
@@ -63,7 +65,7 @@ curs.execute("create table if not exists stats(id text, count text)")
 conn.commit()
 
 # 버전 정리
-bot_version = '다용도봇 01'
+bot_version = '다용도봇-02'
 print(bot_version)
 
 # URL 인코딩 함수
@@ -81,8 +83,7 @@ def insert_stats(data):
     curs.execute('select count from stats where id = ?', [data])
     count = curs.fetchall()
     if count:
-        count = int(count[0][0]) + 1
-        curs.execute("update stats set count = ? where id = ?", [count, data])
+        curs.execute("update stats set count = ? where id = ?", [str(int(count[0][0]) + 1), data])
     else:
         curs.execute('insert into stats (id, count) values (?, "1")', [data])
     
@@ -93,10 +94,10 @@ def tool_send(bot, update):
     # 내용 출력
     print(str(update.message.text))
 
-    # 시간차 출력
-    print(int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))))
-
     if int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))) < 500:
+        # 시간차 출력
+        print(int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))))
+        
         # 챗 아이디
         chat_id = update.message.chat_id
         
