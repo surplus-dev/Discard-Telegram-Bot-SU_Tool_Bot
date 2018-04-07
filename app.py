@@ -57,7 +57,7 @@ link = {
 }
 
 # 디비 연결
-conn = sqlite3.connect('bot.db')
+conn = sqlite3.connect('bot.db', check_same_thread = False)
 curs = conn.cursor()
 
 # 테이블 생성
@@ -79,7 +79,7 @@ def get_time():
 
     return date
 
-def insert_stats(data):
+def insert_db(data):
     curs.execute('select count from stats where id = ?', [data])
     count = curs.fetchall()
     if count:
@@ -88,15 +88,15 @@ def insert_stats(data):
         curs.execute('insert into stats (id, count) values (?, "1")', [data])
     
     conn.commit()
-
+    
 # 메인 함수
 def tool_send(bot, update):
-    # 내용 출력
-    print(str(update.message.text))
+    # 시간차 출력
+    print(int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))))
 
-    if int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))) < 500:
-        # 시간차 출력
-        print(int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))))
+    if int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))) < 500:        
+        # 내용 출력
+        print(str(update.message.text))
         
         # 챗 아이디
         chat_id = update.message.chat_id
@@ -104,15 +104,15 @@ def tool_send(bot, update):
         # 만약 ^\[버전]$ 이 있으면
         if re.search('^\[버전]$', str(update.message.text)):
             # 통계 삽입
-            insert_stats('version')
-
+            insert_db('version')
+            
             # 버전을 리턴
             update.message.reply_text(bot_version)
 
         # 만약 ^\[통계]$ 가 있으면
         if re.search('^\[통계]$', str(update.message.text)):
             # 통계 삽입
-            insert_stats('count')
+            insert_db('count')
 
             # 통계를 리턴
             curs.execute("select id, count from stats order by id asc")
@@ -125,11 +125,11 @@ def tool_send(bot, update):
                 data = '> 통계 없음'
 
             update.message.reply_text(data)
-
+            
         # 만약 ^\[도움]$ 이 있으면
         if re.search('^\[도움]$', str(update.message.text)):
             # 통계 삽입
-            insert_stats('help')
+            insert_db('help')
 
             # 도움말 리턴
             update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
@@ -138,7 +138,7 @@ def tool_send(bot, update):
         inter = re.search('^\[\[((?:(?!]]).)+)]]$', str(update.message.text))
         if inter:
             # 인터위키 통계 삽입
-            insert_stats('inter')
+            insert_db('inter')
 
             # 그룹화 해서
             inter = inter.groups()
@@ -152,7 +152,7 @@ def tool_send(bot, update):
                 # 만약 사이트가 딕셔너리 안에 있으면
                 if start[0] in link:
                     # 세부적인 통계 삽입
-                    insert_stats('inter:' + start[0])
+                    insert_db('inter:' + start[0])
 
                     # 404 확인
                     if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
