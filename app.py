@@ -51,9 +51,10 @@ link = {
     '유리위키' : 'https://yuri.wiki/w/index.php?title=',
     '오픈테섭' : 'https://namu.ml/w/',
     '네이버' : 'https://search.naver.com/search.naver?query=',
-    '구글' : 'https://www.google.co.kr/search?q=',
+    '구글' : 'https://www.google.com/search?q=',
     '유튜브' : 'https://www.youtube.com/results?search_query=',
-    '다음' : 'http://search.daum.net/search?q='
+    '다음' : 'http://search.daum.net/search?q=',
+    '덕덕고' : 'https://duckduckgo.com/?q='
 }
 
 # 디비 연결
@@ -65,7 +66,7 @@ curs.execute("create table if not exists stats(id text, count text)")
 conn.commit()
 
 # 버전 정리
-bot_version = '다용도봇-02'
+bot_version = '다용도봇-03'
 print(bot_version)
 
 # URL 인코딩 함수
@@ -164,7 +165,11 @@ def tool_send(bot, update):
                         )
                     else:
                         # 404면 문서 없음
-                        update.message.reply_text('문서가 없습니다.')
+                        bot.send_message(
+                            chat_id = chat_id, 
+                            text = "문서가 없습니다.\n\n> [구글](https://www.google.com/search?q=" + start[0] + ' ' + url_encode(start[1]) + ")\n> [덕덕고](https://duckduckgo.com/?q=" + start[0] + ' ' + url_encode(start[1]) + ")", 
+                            parse_mode = telegram.ParseMode.MARKDOWN
+                        )
 
 # 이 정규식을 포함하는 채팅만 인식하도록
 data_list = ['^\[(?:버전|통계|도움)]$', '^\[\[((?:(?!]]).)+)]]$']
