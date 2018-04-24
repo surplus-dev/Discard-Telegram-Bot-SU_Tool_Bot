@@ -42,7 +42,14 @@ print(set_data['token'])
 link = {
     '나무위키' : 'https://namu.wiki/w/',
     '알파위키' : 'https://www.alphawiki.org/w/',
+
+    '리그베다' : 'http://rigvedawiki.net/w/'
+    '리그베다위키' : 'http://rigvedawiki.net/w/'
+
+    '리브레' : 'https://librewiki.net/wiki/',
+    '리브레위키' : 'https://librewiki.net/wiki/',
     '리브레 위키' : 'https://librewiki.net/wiki/',
+
     '백괴사전' : 'https://uncyclopedia.kr/wiki/',
     '위키백과' : 'https://ko.wikipedia.org/wiki/', 
     '진보위키' : 'https://jinbowiki.org/wiki/index.php/',
@@ -50,6 +57,7 @@ link = {
     '디시위키' : 'http://wiki.dcinside.com/wiki/',
     '유리위키' : 'https://yuri.wiki/w/index.php?title=',
     '오픈테섭' : 'https://namu.ml/w/',
+
     '네이버' : 'https://search.naver.com/search.naver?query=',
     '구글' : 'https://www.google.com/search?q=',
     '유튜브' : 'https://www.youtube.com/results?search_query=',
@@ -66,7 +74,7 @@ curs.execute("create table if not exists stats(id text, count text)")
 conn.commit()
 
 # 버전 정리
-bot_version = '다용도봇-03'
+bot_version = '다용도봇-04'
 print(bot_version)
 
 # URL 인코딩 함수
@@ -133,7 +141,7 @@ def tool_send(bot, update):
             insert_db('help')
 
             # 도움말 리턴
-            update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레 위키, 위키백과, 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
+            update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, (리브레|리브레위키|리브레 위키), (리그베다|리그베다 위키), 위키백과\n>> 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
 
         # 인터위키 내용을 포함하면
         inter = re.search('^\[\[((?:(?!]]).)+)]]$', str(update.message.text))
