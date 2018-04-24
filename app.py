@@ -43,8 +43,8 @@ link = {
     '나무위키' : 'https://namu.wiki/w/',
     '알파위키' : 'https://www.alphawiki.org/w/',
 
-    '리그베다' : 'http://rigvedawiki.net/w/'
-    '리그베다위키' : 'http://rigvedawiki.net/w/'
+    '리그베다' : 'http://rigvedawiki.net/w/',
+    '리그베다위키' : 'http://rigvedawiki.net/w/',
 
     '리브레' : 'https://librewiki.net/wiki/',
     '리브레위키' : 'https://librewiki.net/wiki/',
