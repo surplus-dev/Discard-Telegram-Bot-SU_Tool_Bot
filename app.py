@@ -42,7 +42,7 @@ print(set_data['token'])
 link = {
     '나무위키' : 'https://namu.wiki/w/',
     '알파위키' : 'https://www.alphawiki.org/w/',
-    '리브레위키' : 'https://librewiki.net/wiki/',
+    '리브레 위키' : 'https://librewiki.net/wiki/',
     '백괴사전' : 'https://uncyclopedia.kr/wiki/',
     '위키백과' : 'https://ko.wikipedia.org/wiki/', 
     '진보위키' : 'https://jinbowiki.org/wiki/index.php/',
@@ -133,7 +133,7 @@ def tool_send(bot, update):
             insert_db('help')
 
             # 도움말 리턴
-            update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레위키, 위키백과, 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
+            update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, 리브레 위키, 위키백과, 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
 
         # 인터위키 내용을 포함하면
         inter = re.search('^\[\[((?:(?!]]).)+)]]$', str(update.message.text))
