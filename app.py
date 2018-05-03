@@ -69,7 +69,7 @@ curs.execute("create table if not exists stats(id text, count text)")
 curs.execute("create table if not exists setting(id text, data text)")
 conn.commit()
 
-curs.execute('select count from setting where id = "pw"')
+curs.execute('select data from setting where id = "pw"')
 if not curs.fetchall():
     print('비밀번호? : ', end = '')
     pw = input()
