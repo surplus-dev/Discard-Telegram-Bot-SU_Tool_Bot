@@ -103,7 +103,12 @@ def insert_db(data):
     
 # 메인 함수
 def tool_send(bot, update):
-    if int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))) < 500:        
+    print(str(update.message.text))
+
+    delay_time = int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date)))
+    print(delay_time)
+
+    if delay_time < 500:        
         # 챗 아이디
         chat_id = update.message.chat_id
         
