@@ -75,6 +75,7 @@ if not curs.fetchall():
     pw = input()
     
     curs.execute('insert into setting (id, data) values ("pw", ?)', [pw])
+    conn.commit()
 
 # 버전 정리
 bot_version = '다용도봇-05'
@@ -143,7 +144,7 @@ def tool_send(bot, update):
             re_set = re_set.groups()[0]
 
             curs.execute("select data from setting where id = 'pw'")
-            if re_set == curs.fetchall()[0]:
+            if re_set == curs.fetchall()[0][0]:
                 curs.execute('delete from stats')
                 conn.commit()
 
