@@ -28,7 +28,7 @@ except:
 
             break
         else:
-            print('Insert Values')
+            print('값이 이상합니다.')
             
             pass
 
@@ -66,7 +66,15 @@ curs = conn.cursor()
 
 # 테이블 생성
 curs.execute("create table if not exists stats(id text, count text)")
+curs.execute("create table if not exists set(id text, data text)")
 conn.commit()
+
+curs.execute('select count from set where id = "pw"')
+if not curs.fetchall():
+    print('비밀번호? : ', end = '')
+    pw = input()
+    
+    curs.execute('insert into set (id, data) values ("pw", ?)', [pw])
 
 # 버전 정리
 bot_version = '다용도봇-04'
@@ -95,13 +103,7 @@ def insert_db(data):
     
 # 메인 함수
 def tool_send(bot, update):
-    # 시간차 출력
-    print(int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))))
-
     if int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date))) < 500:        
-        # 내용 출력
-        print(str(update.message.text))
-        
         # 챗 아이디
         chat_id = update.message.chat_id
         
@@ -130,13 +132,25 @@ def tool_send(bot, update):
 
             update.message.reply_text(data)
             
+        # 만약 ^\[통계]$ 가 있으면
+        re_set = re.search('^\[통계 초기화\(((?:(?!\)).)+)\)]$', str(update.message.text))
+        if re_set:
+            re_set = re_set.groups()[0]
+
+            curs.execute("select data from set where id = 'pw'")
+            if re_set == curs.fetchall()[0]:
+                curs.execute('delete from stats')
+                conn.commit()
+
+                update.message.reply_text('> 완료')
+            
         # 만약 ^\[도움]$ 이 있으면
         if re.search('^\[도움]$', str(update.message.text)):
             # 통계 삽입
             insert_db('help')
 
             # 도움말 리턴
-            update.message.reply_text('= 지원하는 커맨드 =\n== [[위키명:문서명]] ==\n=== 위키 ===\n>> 나무, 리브레, 리베, 위백, 구스, 진보, 백괴, 유리\n\n=== 일반 ===\n>> 네이버, 구글, 유튜브, 다음\n\n== 기타 ==> [버전]\n> [통계]')
+            update.message.reply_text('= 지원하는 커맨드 =\n== [[위키명:문서명]] ==\n=== 위키 ===\n> 나무, 리브레, 리베, 위백, 구스, 진보, 백괴, 유리\n\n=== 일반 ===\n> 네이버, 구글, 유튜브, 다음\n\n== 기타 ==\n> [버전]\n> [통계]')
 
         # 인터위키 내용을 포함하면
         inter = re.search('^\[\[((?:(?!]]).)+)]]$', str(update.message.text))
@@ -175,7 +189,7 @@ def tool_send(bot, update):
                         )
 
 # 이 정규식을 포함하는 채팅만 인식하도록
-data_list = ['^\[(?:버전|통계|도움)]$', '^\[\[((?:(?!]]).)+)]]$']
+data_list = ['^\[(?:((?!\]).)+)]$', '^\[\[((?:(?!]]).)+)]]$']
 for data in data_list:
     updater.dispatcher.add_handler(RegexHandler(data, tool_send))
     
