@@ -40,22 +40,17 @@ print(set_data['token'])
 
 # 인터위키 딕셔너리 생성
 link = {
-    '나무위키' : 'https://namu.wiki/w/',
-    '알파위키' : 'https://www.alphawiki.org/w/',
-
-    '리그베다' : 'http://rigvedawiki.net/w/',
-    '리그베다위키' : 'http://rigvedawiki.net/w/',
-
+    '나무' : 'https://namu.wiki/w/',
+    '알파' : 'https://www.alphawiki.org/w/',
+    '리베' : 'http://rigvedawiki.net/w/',
     '리브레' : 'https://librewiki.net/wiki/',
-    '리브레위키' : 'https://librewiki.net/wiki/',
-    '리브레 위키' : 'https://librewiki.net/wiki/',
-
-    '백괴사전' : 'https://uncyclopedia.kr/wiki/',
-    '위키백과' : 'https://ko.wikipedia.org/wiki/', 
-    '진보위키' : 'https://jinbowiki.org/wiki/index.php/',
-    '구스위키' : 'http://goos.wiki/index.php?title=',
-    '디시위키' : 'http://wiki.dcinside.com/wiki/',
-    '유리위키' : 'https://yuri.wiki/w/index.php?title=',
+    '백괴' : 'https://uncyclopedia.kr/wiki/',
+    '위백' : 'https://ko.wikipedia.org/wiki/', 
+    '진보' : 'https://jinbowiki.org/wiki/index.php/',
+    '구스' : 'http://goos.wiki/index.php?title=',
+    '디시' : 'http://wiki.dcinside.com/wiki/',
+    '유리' : 'https://yuri.wiki/w/index.php?title=',
+    
     '오픈테섭' : 'https://namu.ml/w/',
 
     '네이버' : 'https://search.naver.com/search.naver?query=',
@@ -141,7 +136,7 @@ def tool_send(bot, update):
             insert_db('help')
 
             # 도움말 리턴
-            update.message.reply_text('== 지원하는 커맨드 ==\n> [[위키명:문서명]]\n>> 나무위키, (리브레|리브레위키|리브레 위키), (리그베다|리그베다 위키), 위키백과\n>> 구스위키, 진보위키, 백괴사전, 유리위키\n>> 네이버, 구글, 유튜브, 다음\n> [버전]\n> [통계]')
+            update.message.reply_text('= 지원하는 커맨드 =\n== [[위키명:문서명]] ==\n=== 위키 ===\n>> 나무, 리브레, 리베, 위백, 구스, 진보, 백괴, 유리\n\n=== 일반 ===\n>> 네이버, 구글, 유튜브, 다음\n\n== 기타 ==> [버전]\n> [통계]')
 
         # 인터위키 내용을 포함하면
         inter = re.search('^\[\[((?:(?!]]).)+)]]$', str(update.message.text))
