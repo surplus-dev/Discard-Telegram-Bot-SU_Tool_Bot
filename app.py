@@ -66,18 +66,18 @@ curs = conn.cursor()
 
 # 테이블 생성
 curs.execute("create table if not exists stats(id text, count text)")
-curs.execute("create table if not exists set(id text, data text)")
+curs.execute("create table if not exists setting(id text, data text)")
 conn.commit()
 
-curs.execute('select count from set where id = "pw"')
+curs.execute('select count from setting where id = "pw"')
 if not curs.fetchall():
     print('비밀번호? : ', end = '')
     pw = input()
     
-    curs.execute('insert into set (id, data) values ("pw", ?)', [pw])
+    curs.execute('insert into setting (id, data) values ("pw", ?)', [pw])
 
 # 버전 정리
-bot_version = '다용도봇-04'
+bot_version = '다용도봇-05'
 print(bot_version)
 
 # URL 인코딩 함수
@@ -137,7 +137,7 @@ def tool_send(bot, update):
         if re_set:
             re_set = re_set.groups()[0]
 
-            curs.execute("select data from set where id = 'pw'")
+            curs.execute("select data from setting where id = 'pw'")
             if re_set == curs.fetchall()[0]:
                 curs.execute('delete from stats')
                 conn.commit()
