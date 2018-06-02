@@ -79,7 +79,7 @@ if not curs.fetchall():
     conn.commit()
 
 # 버전 정리
-bot_version = '다용도봇-05'
+bot_version = '다용도봇-06'
 print(bot_version)
 
 # URL 인코딩 함수
@@ -110,9 +110,17 @@ def tool_send(bot, update):
     delay_time = int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date)))
     print(delay_time)
 
-    if delay_time < 500:        
+    if delay_time < 120:        
         # 챗 아이디
         chat_id = update.message.chat_id
+
+        # 만약 ^\[핑]$ 이 있으면
+        if re.search('^\[핑]$', str(update.message.text)):
+            # 통계 삽입
+            insert_db('ping')
+
+            # 도움말 리턴
+            update.message.reply_text(str(delay_time) + '초')
         
         # 만약 ^\[버전]$ 이 있으면
         if re.search('^\[버전]$', str(update.message.text)):
