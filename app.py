@@ -52,6 +52,7 @@ link = {
     '유리' : 'https://yuri.wiki/w/index.php?title=',
     
     '오픈테섭' : 'https://namu.ml/w/',
+    '더시드' : 'https://theseed.io/w/',
 
     '네이버' : 'https://search.naver.com/search.naver?query=',
     '구글' : 'https://www.google.com/search?q=',
