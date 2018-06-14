@@ -179,13 +179,13 @@ def tool_send(bot, update):
                         bot.send_message(
                             chat_id = chat_id, 
                             text = "[" + inter[0] + "](" + link[start[0]] + url_encode(start[1]) + ")", 
-                            urllib.parse_mode = telegram.urllib.parseMode.MARKDOWN
+                            parse_mode = telegram.urllib.parseMode.MARKDOWN
                         )
                     else:
                         bot.send_message(
                             chat_id = chat_id, 
                             text = "문서가 없습니다.\n\n> [구글](https://www.google.com/search?q=" + start[0] + ' ' + url_encode(start[1]) + ")\n> [덕덕고](https://duckduckgo.com/?q=" + start[0] + ' ' + url_encode(start[1]) + ")", 
-                            urllib.parse_mode = telegram.urllib.parseMode.MARKDOWN
+                            parse_mode = telegram.urllib.parseMode.MARKDOWN
                         )
 
 # 이 정규식을 포함하는 채팅만 인식하도록
