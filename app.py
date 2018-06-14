@@ -1,4 +1,3 @@
-# 패키지 불러오기
 import telegram
 from telegram.ext import Updater, RegexHandler, CommandHandler
 
@@ -11,7 +10,6 @@ import pytz
 import time
 import re
 
-# set.json 설정 확인
 try:
     json_data = open('set.json').read()
     set_data = json.loads(json_data)
@@ -33,13 +31,11 @@ except:
             
             pass
 
-# 봇 토큰 삽입
 my_token = set_data['token']
 updater = Updater(my_token)
 
 print(set_data['token'])
 
-# 인터위키 딕셔너리 생성
 link = {
     '나무' : 'https://namu.wiki/w/',
     '알파' : 'https://www.alphawiki.org/w/',
@@ -62,11 +58,11 @@ link = {
     '덕덕고' : 'https://duckduckgo.com/?q='
 }
 
-# 디비 연결
+tz_lookup = dict([(pytz.timezone(x).localize(datetime.datetime.now()).tzname(), x) for x in pytz.all_timezones])
+
 conn = sqlite3.connect('bot.db', check_same_thread = False)
 curs = conn.cursor()
 
-# 테이블 생성
 curs.execute("create table if not exists stats(id text, count text)")
 curs.execute("create table if not exists setting(id text, data text)")
 conn.commit()
@@ -79,15 +75,12 @@ if not curs.fetchall():
     curs.execute('insert into setting (id, data) values ("pw", ?)', [pw])
     conn.commit()
 
-# 버전 정리
 bot_version = '다용도봇-07'
 print(bot_version)
 
-# URL 인코딩 함수
 def url_encode(data):
     return urllib.parse.quote(data).replace('/','%2F')
 
-# 시간 가져오기
 def get_time():
     now = time.localtime()
     date = "%04d-%02d-%02d %02d:%02d:%02d" % (now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec)
@@ -104,7 +97,6 @@ def insert_db(data):
     
     conn.commit()
     
-# 메인 함수
 def tool_send(bot, update):
     print(str(update.message.text))
 
@@ -163,7 +155,7 @@ def tool_send(bot, update):
                             int(datetime.datetime.today().strftime("%M")),
                             int(datetime.datetime.today().strftime("%S"))
                         )
-                    ).astimezone(pytz.timezone(time_re)).strftime("%Y-%m-%d %H:%M:%S %Z%z")
+                    ).astimezone(pytz.timezone(tz_lookup[time_re] if time_re in tz_lookup else time_re)).strftime("%Y-%m-%d %H:%M:%S %Z%z")
                 )
             except:
                 update.message.reply_text('https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568\n\n타임존 정보')
