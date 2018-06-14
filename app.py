@@ -3,6 +3,7 @@ import telegram
 from telegram.ext import Updater, RegexHandler, CommandHandler
 
 import urllib.parse
+import datetime
 import sqlite3
 import requests
 import json
@@ -153,9 +154,19 @@ def tool_send(bot, update):
             time_re = time_re.groups()[0]
 
             try:
-                update.message.reply_text(pytz.timezone(time_re).localize(datetime.datetime.today()).strftime("%Y-%m-%d %H:%M:%S"))
+                update.message.reply_text(pytz.timezone('Asia/Seoul').localize(
+                        datetime.datetime(
+                            int(datetime.datetime.today().strftime("%Y")),
+                            int(datetime.datetime.today().strftime("%m")),
+                            int(datetime.datetime.today().strftime("%d")),
+                            int(datetime.datetime.today().strftime("%H")),
+                            int(datetime.datetime.today().strftime("%M")),
+                            int(datetime.datetime.today().strftime("%S"))
+                        )
+                    ).astimezone(pytz.timezone(time_re)).strftime("%Y-%m-%d %H:%M:%S %Z%z")
+                )
             except:
-                update.message.reply_text('http://technote.kr/202\n\n타임존 정보')
+                update.message.reply_text('https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568\n\n타임존 정보')
 
         if re.search('^\[도움]$', str(update.message.text)):
             insert_db('help')
