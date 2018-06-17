@@ -151,6 +151,8 @@ def tool_send(bot, update):
                             
                         time_re = re.search('\[시간대\(((?:(?!\)).)+)\)]', main_data)
                         if time_re:
+                            insert_db('time')
+                        
                             time_re = time_re.groups()[0]
 
                             now_date = re.findall('([0-9]+)', str(update.message.date))
@@ -166,11 +168,51 @@ def tool_send(bot, update):
                                     )
                                 ).astimezone(pytz.timezone(tz_lookup[time_re] if time_re in tz_lookup else time_re)).strftime("%Y-%m-%d %H:%M:%S %Z%z")
                             )
+                            
+                        markdown_data = re.search('\[나무마크\(((?:(?!\)).)+)\)]', main_data)
+                        if markdown_data:
+                            insert_db('namumark')
+                        
+                            markdown_data = markdown_data.groups()[0]
+                            
+                            markdown_data = re.sub("'''(?P<in>(?:(?!''').)+)'''", '*\g<in>*', markdown_data)
+                            markdown_data = re.sub("''(?P<in>(?:(?!'').)+)''", '_\g<in>_', markdown_data)
+                            markdown_data = re.sub("\[\[(?P<in>(?:(?!\|).)+)\|(?P<out>(?:(?!\]\]).)+)\]\]", '[\g<out>](\g<in>)', markdown_data)
+                            markdown_data = re.sub("{{{(?P<in>(?:(?!}}}).)+)}}}", '`\g<in>`', markdown_data)  
+
+                            bot.send_message(
+                                chat_id = chat_id, 
+                                text = markdown_data, 
+                                parse_mode = 'Markdown'
+                            )
 
                         if re.search('\[도움]', main_data):
                             insert_db('help')
 
-                            update.message.reply_text('= 지원하는 커맨드 =\n== [[위키명:문서명]] ==\n=== 위키 ===\n> 나무, 리브레, 리베, 위백, 구스, 진보, 백괴, 유리\n\n=== 일반 ===\n> 네이버, 구글, 유튜브, 다음\n\n== 기타 ==\n> [버전]\n> [통계]')
+                            bot.send_message(
+                                chat_id = chat_id,
+                                text =  re.sub('\n +', '',
+                                            '''
+                                            == `[[위키명:문서명]]` ==\n
+                                            === 위키 ===\n
+                                            > 나무, 리브레, 리베, 위백, 구스, 진보, 백괴, 유리\n\n
+                                            === 일반 ===\n
+                                            > 네이버, 구글, 유튜브, 다음\n\n
+                                            == `[시간대(시간대)]` ==\n
+                                            > [지원하는 시간대 정보](https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568)\n\n
+                                            == `[나무마크(문법)]` ==\n
+                                            > `[[주소|보이는 곳]]`\n
+                                            > `''\'강조''\'` (영어만 가능)\n
+                                            > `''기울임''`\n
+                                            > `{{{내용}}}`\n\n
+                                            == 기타 ==\n
+                                            > `[버전]`\n
+                                            > `[통계]`\n
+                                            > `[핑]`
+                                            '''
+                                        ),
+                                parse_mode = 'Markdown'
+                            )
 
                         inter = re.search('\[\[((?:(?!]]).)+)]]', main_data)
                         if inter:
