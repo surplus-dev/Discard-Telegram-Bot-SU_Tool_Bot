@@ -99,7 +99,9 @@ def insert_db(data):
     
 def tool_send(bot, update):
     try:
-        if re.search('(?:\[(?:((?!\]).)+)]|\[\[((?:(?!]]).)+)]])', str(update.message.text)):
+        main_data = str(update.message.text)
+        main_data = re.sub('\[br\]', '<br>', main_data)
+        if re.search('(?:\[(?:((?!\]).)+)]|\[\[((?:(?!]]).)+)]])', main_data):
             print('text : ' + str(update.message.text))
 
             delay_time = int(re.sub('-|:| ', '', get_time())) - int(re.sub('-|:| ', '', str(update.message.date)))
@@ -107,9 +109,8 @@ def tool_send(bot, update):
 
             if delay_time < 120:              
                 chat_id = update.message.chat_id
-                main_data = str(update.message.text)
-
                 run_int = 1
+                
                 while 1:            
                     if re.search('(?:\[(?:((?!\]).)+)]|\[\[((?:(?!]]).)+)]])', main_data):
                         print('run : ' + str(run_int))
@@ -177,8 +178,9 @@ def tool_send(bot, update):
                             
                             markdown_data = re.sub("'''(?P<in>(?:(?!''').)+)'''", '*\g<in>*', markdown_data)
                             markdown_data = re.sub("''(?P<in>(?:(?!'').)+)''", '_\g<in>_', markdown_data)
+                            markdown_data = re.sub("<br>", '\n', markdown_data)
                             markdown_data = re.sub("\[\[(?P<in>(?:(?!\|).)+)\|(?P<out>(?:(?!\]\]).)+)\]\]", '[\g<out>](\g<in>)', markdown_data)
-                            markdown_data = re.sub("{{{(?P<in>(?:(?!}}}).)+)}}}", '`\g<in>`', markdown_data)  
+                            markdown_data = re.sub("{{{(?P<in>(?:(?!}}}).)+)}}}", '`\g<in>`', markdown_data)
 
                             bot.send_message(
                                 chat_id = chat_id, 
@@ -204,7 +206,8 @@ def tool_send(bot, update):
                                             > `[[주소|보이는 곳]]`\n
                                             > `''\'강조''\'` (영어만 가능)\n
                                             > `''기울임''`\n
-                                            > `{{{내용}}}`\n\n
+                                            > `{{{내용}}}`\n
+                                            > `[br]`\n\n
                                             == 기타 ==\n
                                             > `[버전]`\n
                                             > `[통계]`\n
