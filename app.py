@@ -75,7 +75,7 @@ if not curs.fetchall():
     curs.execute('insert into setting (id, data) values ("pw", ?)', [pw])
     conn.commit()
 
-bot_version = '다용도봇-07'
+bot_version = '다용도봇-08'
 print(bot_version)
 
 def url_encode(data):
