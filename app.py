@@ -55,7 +55,9 @@ link = {
     '구글' : 'https://www.google.com/search?q=',
     '유튜브' : 'https://www.youtube.com/results?search_query=',
     '다음' : 'http://search.daum.net/search?q=',
-    '덕덕고' : 'https://duckduckgo.com/?q='
+    '덕덕고' : 'https://duckduckgo.com/?q=',
+
+    '히토미' : 'https://hitomi.la/galleries/'
 }
 
 tz_lookup = dict([(pytz.timezone(x).localize(datetime.datetime.now()).tzname(), x) for x in pytz.all_timezones])
@@ -231,9 +233,14 @@ def tool_send(bot, update):
                                     insert_db('inter:' + start[0])
 
                                     if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
+                                        if start[0] == '히토미':
+                                            link_go = link[start[0]] + url_encode(start[1]) + '.html'
+                                        else:
+                                            link_go = link[start[0]] + url_encode(start[1])
+
                                         bot.send_message(
                                             chat_id = chat_id, 
-                                            text = "[" + inter[0] + "](" + link[start[0]] + url_encode(start[1]) + ")", 
+                                            text = "[" + inter[0] + "](" + link_go + ")",
                                             parse_mode = 'Markdown'
                                         )
                                     else:
