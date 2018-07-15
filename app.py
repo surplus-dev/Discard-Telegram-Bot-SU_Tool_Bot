@@ -67,6 +67,7 @@ curs = conn.cursor()
 
 curs.execute("create table if not exists stats(id text, count text)")
 curs.execute("create table if not exists setting(id text, data text)")
+curs.execute("create table if not exists user_set(id text, user text, data text)")
 conn.commit()
 
 curs.execute('select data from setting where id = "pw"')
@@ -111,6 +112,7 @@ def tool_send(bot, update):
 
             if delay_time < 120:              
                 chat_id = update.message.chat_id
+                sender = update.message.from_user.id
                 run_int = 1
                 
                 while 1:            
@@ -190,6 +192,24 @@ def tool_send(bot, update):
                                 parse_mode = 'Markdown'
                             )
 
+                        set_data = re.search('\[설정\(([^,]+), ?([^,]+)\)]', main_data)
+                        if set_data:
+                            set_data = set_data.groups()
+                            
+                            insert_db('set')
+
+                            ok_list = ['wiki']
+                            if set_data[0] in ok_list:
+                                curs.execute('select id from user_set where id = ? and user = ?', [set_data[0], sender])
+                                if curs.fetchall():
+                                    curs.execute("update user_set set data = ? where id = ? and user = ?", [set_data[1], set_data[0], sender])
+                                else:
+                                    curs.execute('insert into user_set (id, user, data) values (?, ?, ?)', [set_data[0], sender, set_data[1]])
+
+                            conn.commit()
+
+                            update.message.reply_text('> 완료')
+
                         if re.search('\[도움]', main_data):
                             insert_db('help')
 
@@ -210,6 +230,8 @@ def tool_send(bot, update):
                                             > `''기울임''`\n
                                             > `{{{내용}}}`\n
                                             > `[br]`\n\n
+                                            == `[설명(이름, 값)]` ==\n
+                                            > `wiki, 위키명` (인터위키 기본값)\n\n
                                             == 기타 ==\n
                                             > `[버전]`\n
                                             > `[통계]`\n
@@ -225,11 +247,26 @@ def tool_send(bot, update):
 
                             inter = inter.groups()
 
+                            curs.execute('select data from user_set where id = "wiki" and user = ?', [sender])
+                            data = curs.fetchall()
+
                             start = re.search('([^:]*):(.*)', inter[0])
-                            if start:
-                                start = start.groups()
+                            if start or data:
+                                if start:
+                                    start = start.groups()
+                                else:
+                                    start = [data[0][0], inter[0]]
                                 
-                                if start[0] in link:
+                                if not start[0] in link:
+                                    if data[0][0] in link:
+                                        start = [data[0][0], inter[0]]
+                                        pass_num = 1
+                                    else:
+                                        pass_num = 0
+                                else:
+                                    pass_num = 1
+
+                                if pass_num == 1:
                                     insert_db('inter:' + start[0])
 
                                     if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
@@ -240,13 +277,17 @@ def tool_send(bot, update):
 
                                         bot.send_message(
                                             chat_id = chat_id, 
-                                            text = "[" + inter[0] + "](" + link_go + ")",
+                                            text = "[" + start[0] + ":" + start[1] + "](" + link_go + ")",
                                             parse_mode = 'Markdown'
                                         )
                                     else:
                                         bot.send_message(
                                             chat_id = chat_id, 
-                                            text = "문서가 없습니다.\n\n> [구글](https://www.google.com/search?q=" + start[0] + ' ' + url_encode(start[1]) + ")\n> [덕덕고](https://duckduckgo.com/?q=" + start[0] + ' ' + url_encode(start[1]) + ")", 
+                                            text =  '''
+                                                    문서가 없습니다.\n\n
+                                                    > [구글](https://www.google.com/search?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')\n
+                                                    > [덕덕고](https://duckduckgo.com/?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')
+                                                    ''', 
                                             parse_mode = 'Markdown'
                                         )
                                         
