@@ -99,6 +99,9 @@ def insert_db(data):
         curs.execute('insert into stats (id, count) values (?, "1")', [data])
     
     conn.commit()
+
+def get_zip(data):
+    return re.sub('\n +', '', data)
     
 def tool_send(bot, update):
     try:
@@ -215,7 +218,7 @@ def tool_send(bot, update):
 
                             bot.send_message(
                                 chat_id = chat_id,
-                                text =  re.sub('\n +', '',
+                                text =  get_zip(
                                             '''
                                             == `[[위키명:문서명]]` ==\n
                                             === 위키 ===\n
@@ -269,27 +272,42 @@ def tool_send(bot, update):
                                 if pass_num == 1:
                                     insert_db('inter:' + start[0])
 
-                                    if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
-                                        if start[0] == '히토미':
-                                            link_go = link[start[0]] + url_encode(start[1]) + '.html'
-                                        else:
-                                            link_go = link[start[0]] + url_encode(start[1])
+                                    try:
+                                        if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
+                                            if start[0] == '히토미':
+                                                link_go = link[start[0]] + url_encode(start[1]) + '.html'
+                                            else:
+                                                link_go = link[start[0]] + url_encode(start[1])
 
+                                            bot.send_message(
+                                                chat_id = chat_id, 
+                                                text = "[" + start[0] + ":" + start[1] + "](" + link_go + ")",
+                                                parse_mode = 'Markdown'
+                                            )
+                                        else:
+                                            bot.send_message(
+                                                chat_id = chat_id, 
+                                                text = get_zip(
+                                                            '''
+                                                            문서가 없습니다.\n\n
+                                                            > [구글](https://www.google.com/search?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')\n
+                                                            > [덕덕고](https://duckduckgo.com/?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')
+                                                            '''
+                                                        ),
+                                                parse_mode = 'Markdown'
+                                            )
+                                    except:
                                         bot.send_message(
-                                            chat_id = chat_id, 
-                                            text = "[" + start[0] + ":" + start[1] + "](" + link_go + ")",
-                                            parse_mode = 'Markdown'
-                                        )
-                                    else:
-                                        bot.send_message(
-                                            chat_id = chat_id, 
-                                            text =  '''
-                                                    문서가 없습니다.\n\n
-                                                    > [구글](https://www.google.com/search?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')\n
-                                                    > [덕덕고](https://duckduckgo.com/?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')
-                                                    ''', 
-                                            parse_mode = 'Markdown'
-                                        )
+                                                chat_id = chat_id, 
+                                                text = get_zip(
+                                                            '''
+                                                            연결 실패.\n\n
+                                                            > [구글](https://www.google.com/search?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')\n
+                                                            > [덕덕고](https://duckduckgo.com/?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')
+                                                            '''
+                                                        ), 
+                                                parse_mode = 'Markdown'
+                                            )
                                         
                         main_data = re.sub('(?:\[(?:((?!\]).)+)]|\[\[((?:(?!]]).)+)]])', '', main_data, 1)
                         run_int += 1
