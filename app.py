@@ -40,6 +40,7 @@ link = {
     '나무' : 'https://namu.wiki/w/',
     '알파' : 'https://www.alphawiki.org/w/',
     '리베' : 'http://rigvedawiki.net/w/',
+    '디키' : 'https://wiki.dcinside.com/wiki/',
     '리브레' : 'https://librewiki.net/wiki/',
     '백괴' : 'https://uncyclopedia.kr/wiki/',
     '위백' : 'https://ko.wikipedia.org/wiki/', 
@@ -222,7 +223,7 @@ def tool_send(bot, update):
                                             '''
                                             == `[[위키명:문서명]]` ==\n
                                             === 위키 ===\n
-                                            > 나무, 리브레, 리베, 위백, 구스, 진보, 백괴, 유리\n\n
+                                            > 나무, 리브레, 리베, 디키, 위백, 구스, 진보, 백괴, 유리\n\n
                                             === 일반 ===\n
                                             > 네이버, 구글, 유튜브, 다음\n\n
                                             == `[시간대(시간대)]` ==\n
