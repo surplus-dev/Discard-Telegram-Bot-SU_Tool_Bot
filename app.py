@@ -79,7 +79,7 @@ if not curs.fetchall():
     curs.execute('insert into setting (id, data) values ("pw", ?)', [pw])
     conn.commit()
 
-bot_version = '다용도봇-08'
+bot_version = '다용도봇-09'
 print(bot_version)
 
 def url_encode(data):
@@ -274,27 +274,33 @@ def tool_send(bot, update):
                                     insert_db('inter:' + start[0])
 
                                     try:
-                                        if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
-                                            if start[0] == '히토미':
-                                                link_go = link[start[0]] + url_encode(start[1]) + '.html'
-                                            else:
+                                        if start[0] != '히토미':
+                                            if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
                                                 link_go = link[start[0]] + url_encode(start[1])
+
+                                                bot.send_message(
+                                                    chat_id = chat_id, 
+                                                    text = "[" + start[0] + ":" + start[1] + "](" + link_go + ")",
+                                                    parse_mode = 'Markdown'
+                                                )
+                                            else:
+                                                bot.send_message(
+                                                    chat_id = chat_id, 
+                                                    text = get_zip(
+                                                                '''
+                                                                문서가 없습니다.\n\n
+                                                                > [구글](https://www.google.com/search?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')\n
+                                                                > [덕덕고](https://duckduckgo.com/?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')
+                                                                '''
+                                                            ),
+                                                    parse_mode = 'Markdown'
+                                                )
+                                        else:
+                                            link_go = link[start[0]] + url_encode(start[1]) + '.html'
 
                                             bot.send_message(
                                                 chat_id = chat_id, 
                                                 text = "[" + start[0] + ":" + start[1] + "](" + link_go + ")",
-                                                parse_mode = 'Markdown'
-                                            )
-                                        else:
-                                            bot.send_message(
-                                                chat_id = chat_id, 
-                                                text = get_zip(
-                                                            '''
-                                                            문서가 없습니다.\n\n
-                                                            > [구글](https://www.google.com/search?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')\n
-                                                            > [덕덕고](https://duckduckgo.com/?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')
-                                                            '''
-                                                        ),
                                                 parse_mode = 'Markdown'
                                             )
                                     except:
