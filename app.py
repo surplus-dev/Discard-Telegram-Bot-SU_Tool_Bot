@@ -38,7 +38,6 @@ print(set_data['token'])
 
 link = {
     '나무' : 'https://namu.wiki/w/',
-    '알파' : 'https://www.alphawiki.org/w/',
     '리베' : 'http://rigvedawiki.net/w/',
     '디키' : 'https://wiki.dcinside.com/wiki/',
     '리브레' : 'https://librewiki.net/wiki/',
