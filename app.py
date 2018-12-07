@@ -283,13 +283,16 @@ def tool_send(bot, update):
                                                     parse_mode = 'Markdown'
                                                 )
                                             else:
+                                                data_link = re.search('^https?:\/\/([^/]+)', link[start[0]])
+                                                data_link = data_link.groups()[0]
+
                                                 bot.send_message(
                                                     chat_id = chat_id, 
                                                     text = get_zip(
                                                                 '''
                                                                 문서가 없습니다.\n\n
-                                                                > [구글](https://www.google.com/search?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')\n
-                                                                > [덕덕고](https://duckduckgo.com/?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')
+                                                                > [구글](https://www.google.com/search?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')\n
+                                                                > [덕덕고](https://duckduckgo.com/?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')
                                                                 '''
                                                             ),
                                                     parse_mode = 'Markdown'
