@@ -281,7 +281,7 @@ def tool_send(bot, update):
                                                 data = link[start[0]] + url_encode(start[1]).replace('%2F', '/')
 
                                             if requests.get(data).status_code != 404:
-                                                link_go = link[start[0]] + url_encode(start[1])
+                                                link_go = data
 
                                                 bot.send_message(
                                                     chat_id = chat_id, 
