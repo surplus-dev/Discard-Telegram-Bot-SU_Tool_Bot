@@ -47,6 +47,7 @@ link = {
     '구스' : 'http://goos.wiki/index.php?title=',
     '디시' : 'http://wiki.dcinside.com/wiki/',
     '유리' : 'https://yuri.wiki/w/index.php?title=',
+    'SCP' : "http://ko.scp-wiki.net/",
     
     '오픈테섭' : 'https://namu.ml/w/',
     '더시드' : 'https://theseed.io/w/',
