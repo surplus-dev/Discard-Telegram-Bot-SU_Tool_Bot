@@ -275,7 +275,12 @@ def tool_send(bot, update):
 
                                     try:
                                         if start[0] != '히토미':
-                                            if requests.get(link[start[0]] + url_encode(start[1])).status_code != 404:
+                                            if start[0] != 'SCP':
+                                                data = link[start[0]] + url_encode(start[1])
+                                            else:
+                                                data = link[start[0]] + url_encode(start[1]).replace('%2F', '/')
+
+                                            if requests.get(data).status_code != 404:
                                                 link_go = link[start[0]] + url_encode(start[1])
 
                                                 bot.send_message(
