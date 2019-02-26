@@ -27,7 +27,7 @@ except:
 
             break
         else:
-            print('값이 이상합니다.')
+            print('Error')
             
             pass
 
@@ -73,13 +73,13 @@ conn.commit()
 
 curs.execute('select data from setting where id = "pw"')
 if not curs.fetchall():
-    print('비밀번호? : ', end = '')
+    print('Password : ', end = '')
     pw = input()
     
     curs.execute('insert into setting (id, data) values ("pw", ?)', [pw])
     conn.commit()
 
-bot_version = '다용도봇-09'
+bot_version = '다용도봇-10'
 print(bot_version)
 
 def url_encode(data):
@@ -296,7 +296,7 @@ def tool_send(bot, update):
                                                     chat_id = chat_id, 
                                                     text = get_zip(
                                                                 '''
-                                                                문서가 없습니다.\n\n
+                                                                ''' + start[0] + ''' 문서가 없습니다.\n\n
                                                                 > [구글](https://www.google.com/search?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')\n
                                                                 > [덕덕고](https://duckduckgo.com/?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')
                                                                 '''
