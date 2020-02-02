@@ -104,8 +104,9 @@ def tool_send(update, context):
         sender = update.message.from_user.id
         run_int = 1
             
-        all_data = re.findall('(\[(?:(?:(?!\]).)+)]|\[\[(?:(?:(?!]]).)+)]])', str(update.message.text))
+        all_data = re.findall('(\[(?:(?:(?!\[|\]).)+)]|\[\[(?:(?:(?!]]).)+)]])', str(update.message.text))
         for main_data in all_data:
+            print(main_data)
             print('run : ' + str(run_int))
             
             if re.search('\[핑]', main_data):
