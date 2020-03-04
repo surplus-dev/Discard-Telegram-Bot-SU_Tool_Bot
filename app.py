@@ -38,11 +38,7 @@ link = {
     '리베' : 'http://rigvedawiki.net/w/',
     '디키' : 'https://wiki.dcinside.com/wiki/',
     '리브레' : 'https://librewiki.net/wiki/',
-    '백괴' : 'https://uncyclopedia.kr/wiki/',
     '위백' : 'https://ko.wikipedia.org/wiki/', 
-    '진보' : 'https://jinbowiki.org/wiki/index.php/',
-    '구스' : 'http://goos.wiki/index.php?title=',
-    '디시' : 'http://wiki.dcinside.com/wiki/',
     'SCP' : "http://ko.scp-wiki.net/",
     
     '오픈테섭' : 'https://namu.ml/w/',
@@ -73,7 +69,7 @@ if not curs.fetchall():
     curs.execute('insert into setting (id, data) values ("pw", ?)', [pw])
     conn.commit()
 
-bot_version = '다용도봇-12'
+bot_version = '다용도봇-13'
 print(bot_version)
 
 def url_encode(data):
@@ -108,9 +104,6 @@ def tool_send(update, context):
         for main_data in all_data:
             print(main_data)
             print('run : ' + str(run_int))
-            
-            if re.search('\[핑]', main_data):
-                insert_db('ping')
             
             if re.search('\[버전]', main_data):
                 insert_db('version')
@@ -168,9 +161,9 @@ def tool_send(update, context):
                     text =  get_zip('''
                         == `[[위키명:문서명]]` ==\n
                         === 위키 ===\n
-                        > 나무, 리브레, 리베, 디키, 위백, 구스, 진보, 백괴, 유리\n\n
+                        > 나무, 리브레, 리베, 디키, 위백, SCP\n\n
                         === 일반 ===\n
-                        > 네이버, 구글, 유튜브, 다음\n\n
+                        > 네이버, 구글, 유튜브, 다음, 덕덕고\n\n
                         == `[설명(이름, 값)]` ==\n
                         > `wiki, 위키명` (인터위키 기본값)\n\n
                         == 기타 ==\n
@@ -209,47 +202,39 @@ def tool_send(update, context):
                     if pass_num == 1:
                         insert_db('inter:' + start[0])
 
-                        try:
-                            if start[0] != '히토미':
-                                if start[0] != 'SCP':
-                                    data = link[start[0]] + url_encode(start[1])
-                                else:
-                                    data = link[start[0]] + url_encode(start[1]).replace('%2F', '/')
+                        if start[0] == '히토미':
+                            data = link[start[0]] + url_encode(start[1]) + '.html'
+                        elif start[0] == 'SCP':
+                            data = link[start[0]] + url_encode(start[1]).replace('%2F', '/')
+                        else:
+                            data = link[start[0]] + url_encode(start[1])
 
-                                if requests.get(data).status_code != 404:
-                                    link_go = data
-
-                                    context.bot.send_message(
-                                        chat_id = chat_id, 
-                                        text = "[" + start[0] + ":" + start[1] + "](" + link_go + ")",
-                                        parse_mode = 'Markdown'
-                                    )
-                                else:
-                                    data_link = re.search('^https?:\/\/([^/]+)', link[start[0]])
-                                    data_link = data_link.groups()[0]
-
-                                    context.bot.send_message(
-                                        chat_id = chat_id, 
-                                        text = get_zip(
-                                            start[0] + ''' 문서가 없습니다.\n\n
-                                            > [구글](https://www.google.com/search?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')\n
-                                            > [덕덕고](https://duckduckgo.com/?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')
-                                        '''),
-                                        parse_mode = 'Markdown'
-                                    )
+                        link_data = requests.get(data)
+                        if link_data:
+                            if link_data.status_code != 404:
+                                context.bot.send_message(
+                                    chat_id = chat_id, 
+                                    text = "[" + start[0] + ":" + start[1] + "](" + data + ")",
+                                    parse_mode = 'Markdown'
+                                )
                             else:
-                                link_go = link[start[0]] + url_encode(start[1]) + '.html'
+                                data_link = re.search('^https?:\/\/([^/]+)', link[start[0]])
+                                data_link = data_link.groups()[0]
 
                                 context.bot.send_message(
                                     chat_id = chat_id, 
-                                    text = "[" + start[0] + ":" + start[1] + "](" + link_go + ")",
+                                    text = get_zip('' + \
+                                        start[0] + ''' 문서가 없습니다. [(바로가기)](''' + data + ''')\n\n
+                                        > [구글](https://www.google.com/search?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')\n
+                                        > [덕덕고](https://duckduckgo.com/?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')
+                                    '''),
                                     parse_mode = 'Markdown'
                                 )
-                        except:
+                        else:
                             context.bot.send_message(
                                 chat_id = chat_id, 
                                 text = get_zip('''
-                                    연결 실패.\n\n
+                                    연결 실패. [(바로가기)](''' + data + ''')\n\n
                                     > [구글](https://www.google.com/search?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')\n
                                     > [덕덕고](https://duckduckgo.com/?q=''' + start[0] + ' ' + url_encode(start[1]) + ''')
                                 '''), 
@@ -258,7 +243,7 @@ def tool_send(update, context):
 
             run_int += 1
     except Exception as e:
-        print('Error : ' + str(e))
+        print(e)
     
 updater.dispatcher.add_handler(MessageHandler(Filters.regex('.'), tool_send))
 updater.start_polling()
