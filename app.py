@@ -4,7 +4,7 @@ from telegram.ext import Updater, CallbackContext, MessageHandler, Filters
 import urllib.parse
 import datetime
 import sqlite3
-import urllib.request
+import requests
 import json
 import time
 import re
@@ -171,7 +171,6 @@ def tool_send(update, context):
                         == 기타 ==\n
                         > `[버전]`\n
                         > `[통계]`\n
-                        > `[핑]`
                     '''),
                     parse_mode = 'Markdown'
                 )
@@ -211,33 +210,25 @@ def tool_send(update, context):
                         else:
                             data = link[start[0]] + url_encode(start[1])
 
-                        try:
-                            link_data = urllib.request.urlopen(urllib.request.Request(data, headers = header))
-                        except urllib.error.HTTPError as e:
-                            if e.code == 404:
-                                link_data = 404
-                            else:
-                                link_data = None
+                        link_data = requests.get(data)
+                        if link_data.status_code != 404:
+                            context.bot.send_message(
+                                chat_id = chat_id, 
+                                text = "[" + start[0] + ":" + start[1] + "](" + data + ")",
+                                parse_mode = 'Markdown'
+                            )
+                        elif link_data.status_code == 404:
+                            data_link = re.search('^https?:\/\/([^/]+)', link[start[0]])
+                            data_link = data_link.groups()[0]
 
-                        if link_data:
-                            if link_data != 404:
-                                context.bot.send_message(
-                                    chat_id = chat_id, 
-                                    text = "[" + start[0] + ":" + start[1] + "](" + data + ")",
-                                    parse_mode = 'Markdown'
-                                )
-                            else:
-                                data_link = re.search('^https?:\/\/([^/]+)', link[start[0]])
-                                data_link = data_link.groups()[0]
-
-                                context.bot.send_message(
-                                    chat_id = chat_id, 
-                                    text = get_zip('' + \
-                                        start[0] + ''' 문서가 없습니다. [(바로가기)](''' + data + ''')\n\n
-                                        > [구글](https://www.google.com/search?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')\n
-                                        > [덕덕고](https://duckduckgo.com/?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')
-                                    '''),
-                                    parse_mode = 'Markdown'
+                            context.bot.send_message(
+                                chat_id = chat_id, 
+                                text = get_zip('' + \
+                                    start[0] + ''' 문서가 없습니다. [(바로가기)](''' + data + ''')\n\n
+                                    > [구글](https://www.google.com/search?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')\n
+                                    > [덕덕고](https://duckduckgo.com/?q=site:''' + data_link + ' ' + url_encode(start[1]) + ''')
+                                '''),
+                                parse_mode = 'Markdown'
                                 )
                         else:
                             context.bot.send_message(
