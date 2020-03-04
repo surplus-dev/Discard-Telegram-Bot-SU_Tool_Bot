@@ -4,7 +4,7 @@ from telegram.ext import Updater, CallbackContext, MessageHandler, Filters
 import urllib.parse
 import datetime
 import sqlite3
-import requests
+import urllib.request
 import json
 import time
 import re
@@ -60,6 +60,8 @@ curs.execute("create table if not exists stats(id text, count text)")
 curs.execute("create table if not exists setting(id text, data text)")
 curs.execute("create table if not exists user_set(id text, user text, data text)")
 conn.commit()
+
+header = { 'User-Agent' : 'Mozila/5.0', 'referer' : 'https://namu.wiki/w/Test' }
 
 curs.execute('select data from setting where id = "pw"')
 if not curs.fetchall():
@@ -209,9 +211,16 @@ def tool_send(update, context):
                         else:
                             data = link[start[0]] + url_encode(start[1])
 
-                        link_data = requests.get(data)
+                        try:
+                            link_data = urllib.request.urlopen(urllib.request.Request(data, headers = header))
+                        except urllib.error.HTTPError as e:
+                            if e.code == 404:
+                                link_data = 404
+                            else:
+                                link_data = None
+
                         if link_data:
-                            if link_data.status_code != 404:
+                            if link_data != 404:
                                 context.bot.send_message(
                                     chat_id = chat_id, 
                                     text = "[" + start[0] + ":" + start[1] + "](" + data + ")",
